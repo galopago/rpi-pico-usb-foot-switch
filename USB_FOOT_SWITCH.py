@@ -1,9 +1,9 @@
 """CircuitPython Essentials HID Keyboard example"""
 import time
-
 import board
 import digitalio
 import usb_hid
+import os
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
@@ -11,20 +11,68 @@ from adafruit_debouncer import Debouncer
 
 # A simple neat keyboard demo in CircuitPython
 
-# The pins we'll use, each will have an internal pullup
-keypress_pins = [board.GP18, board.GP19]
+keys_conf_file="keys.conf"
+
+
+# Pins, key code, and key modifier.
+default_gpio      = [board.GP18,board.GP19]
+default_keys      = [Keycode.TAB,Keycode.SPACE]
+default_mod_keys  = [Keycode.LEFT_ALT,None]
+
 # Our array of key objects
 key_pin_array = []
 key_pin_array_debounced = []
-# The Keycode sent for each button, will be paired with a control key
-keys_pressed = [Keycode.TAB, Keycode.SPACE]
-#keys_pressed = [Keycode.TAB, "ABCDE"]
-control_key = [Keycode.LEFT_ALT,None]
+
 
 # The keyboard object!
 time.sleep(1)  # Sleep for a bit to avoid a race condition on some systems
 keyboard = Keyboard(usb_hid.devices)
 keyboard_layout = KeyboardLayoutUS(keyboard)  # We're in the US :)
+
+print("Reading config keys file...")
+flist=os.listdir()
+
+print("Debug",board.GP18)
+strconfig = "board.GP17"
+iotest = digitalio.DigitalInOut(eval(strconfig))
+
+if keys_conf_file in flist:
+	print("config file found!:",keys_conf_file)
+	# ****** TODO some sanity checks!!! *******	
+	fp = open(keys_conf_file,'r')
+	
+	# GPIO line
+	fline = fp.readline().rstrip('\n')	
+	spfline = fline.split(',')
+	keypress_pins=[]
+	for gpiopin in spfline:		
+		keypress_pins.append(eval(gpiopin))
+	# KEYS line
+	fline = fp.readline().rstrip('\n')	
+	spfline = fline.split(',')
+	keys_pressed=[]
+	for keycode in spfline:		
+		keys_pressed.append(eval(keycode))
+	# MODIF KEY line	
+	fline = fp.readline().rstrip('\n')	
+	spfline = fline.split(',')
+	control_key=[]
+	for modifkey in spfline:		
+		control_key.append(eval(modifkey))
+	
+	fp.close()
+	
+else:
+	print("config file not found, loading defaults!")
+	keypress_pins = default_gpio
+	keys_pressed  = default_keys
+	control_key   = default_mod_keys
+
+# For most CircuitPython boards:
+led = digitalio.DigitalInOut(board.LED)
+# For QT Py M0:
+# led = digitalio.DigitalInOut(board.SCK)
+led.direction = digitalio.Direction.OUTPUT
 
 # Make all pin objects inputs with pullups
 for pin in keypress_pins:
@@ -33,14 +81,12 @@ for pin in keypress_pins:
     key_pin.pull = digitalio.Pull.UP
     key_pin_array.append(key_pin)
     key_pin_array_debounced.append(Debouncer(key_pin))
-
-# For most CircuitPython boards:
-led = digitalio.DigitalInOut(board.LED)
-# For QT Py M0:
-# led = digitalio.DigitalInOut(board.SCK)
-led.direction = digitalio.Direction.OUTPUT
-
-print("Waiting for key pin...")
+	
+for key_conf in keypress_pins: 
+	j = keypress_pins.index(key_conf)	
+	print("GPIO,key,modifier:", keypress_pins[j], keys_pressed[j],control_key[j])
+	
+print("Waiting for switches...")
 
 while True:
     # Check each pin

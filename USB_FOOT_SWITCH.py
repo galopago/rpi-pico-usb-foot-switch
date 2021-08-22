@@ -7,6 +7,7 @@ import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
+from adafruit_debouncer import Debouncer
 
 # A simple neat keyboard demo in CircuitPython
 
@@ -14,9 +15,11 @@ from adafruit_hid.keycode import Keycode
 keypress_pins = [board.GP18, board.GP19]
 # Our array of key objects
 key_pin_array = []
+key_pin_array_debounced = []
 # The Keycode sent for each button, will be paired with a control key
-keys_pressed = [Keycode.A, "Hello World!\n"]
-control_key = Keycode.SHIFT
+keys_pressed = [Keycode.TAB, Keycode.SPACE]
+#keys_pressed = [Keycode.TAB, "ABCDE"]
+control_key = [Keycode.LEFT_ALT,None]
 
 # The keyboard object!
 time.sleep(1)  # Sleep for a bit to avoid a race condition on some systems
@@ -29,6 +32,7 @@ for pin in keypress_pins:
     key_pin.direction = digitalio.Direction.INPUT
     key_pin.pull = digitalio.Pull.UP
     key_pin_array.append(key_pin)
+    key_pin_array_debounced.append(Debouncer(key_pin))
 
 # For most CircuitPython boards:
 led = digitalio.DigitalInOut(board.LED)
@@ -40,25 +44,30 @@ print("Waiting for key pin...")
 
 while True:
     # Check each pin
-    for key_pin in key_pin_array:
-        if not key_pin.value:  # Is it grounded?
-            i = key_pin_array.index(key_pin)
-            print("Pin #%d is grounded." % i)
+#    for key_pin in key_pin_array:
+	for key_pin_debounced in key_pin_array_debounced:    
+		key_pin_debounced.update()
+		i = key_pin_array_debounced.index(key_pin_debounced)
 
-            # Turn on the red LED
-            led.value = True
+    	
+		if key_pin_debounced.fell:
+			print("Switch pressed.")
+			led.value = True
+			key = keys_pressed[i]  # Get the corresponding Keycode or string
+			mod_key = control_key[i]
+			#control_key = control_key[i]  # Get the corresponding Keycode or string
+			if isinstance(key, str):  # If it's a string...
+				keyboard_layout.write(key)  # ...Print the string
+			else:  # If it's not a string...
+				if control_key[i] == None:
+					keyboard.press(key)  # "Single Key"
+				else:		
+					keyboard.press(mod_key, key)  # "Key with modifier"...
+        
+		if key_pin_debounced.rose:
+			print("Switch released")
+			led.value = False
+			keyboard.release_all()  # ..."Release"!
+    	
 
-            while not key_pin.value:
-                pass  # Wait for it to be ungrounded!
-            # "Type" the Keycode or string
-            key = keys_pressed[i]  # Get the corresponding Keycode or string
-            if isinstance(key, str):  # If it's a string...
-                keyboard_layout.write(key)  # ...Print the string
-            else:  # If it's not a string...
-                keyboard.press(control_key, key)  # "Press"...
-                keyboard.release_all()  # ..."Release"!
-
-            # Turn off the red LED
-            led.value = False
-
-    time.sleep(0.01)
+	time.sleep(0.01)

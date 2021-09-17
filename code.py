@@ -1,4 +1,8 @@
-"""CircuitPython Essentials HID Keyboard example"""
+# **************************************************
+# https://github.com/galopago
+# A very simple example of RPI Pico HID USB keyboard emulator
+# configurable via text file
+
 import time
 import board
 import digitalio
@@ -9,17 +13,29 @@ from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
 from adafruit_debouncer import Debouncer
 
-# A simple neat keyboard demo in CircuitPython
+# *************************************
+# config file format structure:
+# very crude!, do not include empty lines nor comments!
+# first line: GPIO used
+# second line: keycodes
+# third line: modifiers
+# *************************************
+# key code names: https://circuitpython.readthedocs.io/projects/hid/en/latest/api.html
+# wrote the lines below in keys.conf file! (remove # in the file!)
+
+#board.GP18,board.GP19
+#Keycode.TAB,Keycode.SPACE
+#Keycode.LEFT_ALT,None
+
 
 keys_conf_file="keys.conf"
-
 
 # Pins, key code, and key modifier.
 default_gpio      = [board.GP18,board.GP19]
 default_keys      = [Keycode.TAB,Keycode.SPACE]
 default_mod_keys  = [Keycode.LEFT_ALT,None]
 
-# Our array of key objects
+# Array of key objects
 key_pin_array = []
 key_pin_array_debounced = []
 
@@ -27,7 +43,7 @@ key_pin_array_debounced = []
 # The keyboard object!
 time.sleep(1)  # Sleep for a bit to avoid a race condition on some systems
 keyboard = Keyboard(usb_hid.devices)
-keyboard_layout = KeyboardLayoutUS(keyboard)  # We're in the US :)
+keyboard_layout = KeyboardLayoutUS(keyboard)  # US keyboard used
 
 print("Reading config keys file...")
 flist=os.listdir()
@@ -41,19 +57,19 @@ if keys_conf_file in flist:
 	# ****** TODO some sanity checks!!! *******	
 	fp = open(keys_conf_file,'r')
 	
-	# GPIO line
+	# reading GPIO config line
 	fline = fp.readline().rstrip('\n')	
 	spfline = fline.split(',')
 	keypress_pins=[]
 	for gpiopin in spfline:		
 		keypress_pins.append(eval(gpiopin))
-	# KEYS line
+	# reading KEYS config line
 	fline = fp.readline().rstrip('\n')	
 	spfline = fline.split(',')
 	keys_pressed=[]
 	for keycode in spfline:		
 		keys_pressed.append(eval(keycode))
-	# MODIF KEY line	
+	# reading MODIF KEY config line	
 	fline = fp.readline().rstrip('\n')	
 	spfline = fline.split(',')
 	control_key=[]
@@ -90,7 +106,6 @@ print("Waiting for switches...")
 
 while True:
     # Check each pin
-#    for key_pin in key_pin_array:
 	for key_pin_debounced in key_pin_array_debounced:    
 		key_pin_debounced.update()
 		i = key_pin_array_debounced.index(key_pin_debounced)

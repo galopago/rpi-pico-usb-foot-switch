@@ -1,6 +1,6 @@
 # USB FOOT SWITCH BASED ON RPI PICO
 
-USB Foot switch based on Rpi Pico. Configurable via text file, can emulate keystrokes and combination of keys!
+USB Foot switch based on Rpi Pico. Configurable via text file, can emulate keystrokes and combination of keys with your feet!. Apear as a USB standard keyboard. Useful for audio/video edition (start/stop), PC based DIY CNC/3D machines, you name it.
 
 ![DIN-RAIL](docs/footswitch.png)
 
@@ -18,7 +18,8 @@ Read this in other languages: [Español](docs/README.es.md)
 ## How to use this repository
 
 The project is developed in CircuitPython V6.3
-* Plug a Micro USB to USB cable to the RPI Pico (Don't plug into the computer yet).
+* Connect normally open momentary switches (buttons, pedals, levers) between required GPIO ports and ground pins.
+* Plug a Micro USB to USB cable to the Rpi Pico (Don't plug into the computer yet).
 * Press bootsel button and keep pressed, then plug the RPI Pico into an USB port, when plugged release bootsel button.
 * RPI Pico should appear as an USB drive in your OS desktop.(named Pi RP2 Boot)
 * Copy Circuit Python installer from the utils directory to the USB drive 
@@ -26,10 +27,10 @@ The project is developed in CircuitPython V6.3
 * Copy keys.conf file to the root folder of the USB drive 
 * Copy code.py file to the root folder of the USB drive (overwrite)
 * Unplug and Plug again
-
+* Use it!
 
 
 ## License
-[![CC-BY](https://i.creativecommons.org/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)
+[![CC-BY](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/120px-License_icon-mit-88x31-2.svg)](https://spdx.org/licenses/MIT.html)
 
-This is an Open Hardware project an is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)
+This is an Open Source project an is licensed under a [MIT License](https://spdx.org/licenses/MIT.html)

@@ -5,6 +5,8 @@ USB Foot switch based on Rpi Pico. Configurable via text file, can emulate keyst
 ![DIN-RAIL](docs/footswitch.png)
 
 ![PIECES](docs/footswitchopen.png)
+Robust and quickly materialized using [TUSISTEMITA](https://github.com/galopago/TUSISTEMITA) prototyping system.
+
 
 Read this in other languages: [Español](docs/README.es.md)
 
@@ -29,6 +31,10 @@ The project is developed in CircuitPython V6.3
 * Unplug and Plug again
 * Use it!
 
+## Messed USB!
+If for some reason you messed the code, and the usb keyboard is irresponsive or spitfiring keys, you can "format" your Rpi Pico and
+start freshly again doing the following: Unplug Rpi Pico Press bootsel button and keep pressed and then plug the RPI Pico again. Copy the file
+named flash_nuke.uf2 and ta-da!. Rpi Pico like new.
 
 ## License
 

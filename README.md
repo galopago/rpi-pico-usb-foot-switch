@@ -31,6 +31,6 @@ The project is developed in CircuitPython V6.3
 
 
 ## License
-[![MIT](https://upload.wikimedia.org/wikipedia/commons/f/f8/License_icon-mit-88x31-2.svg)](https://spdx.org/licenses/MIT.html)
+[![MIT](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/License_icon-mit.svg/240px-License_icon-mit.svg.png)](https://spdx.org/licenses/MIT.html)
 
 This is an Open Source project an is licensed under a [MIT License](https://spdx.org/licenses/MIT.html)

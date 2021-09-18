@@ -21,6 +21,7 @@ from adafruit_debouncer import Debouncer
 # third line: modifiers
 # *************************************
 # key code names: https://circuitpython.readthedocs.io/projects/hid/en/latest/api.html
+# in this example the switch connected to GP18 emulates TAB+LEFT_ALT, and the switch connected to GP19 emulates SPACE
 # wrote the lines below in keys.conf file! (remove # in the file!)
 
 #board.GP18,board.GP19

@@ -5,6 +5,7 @@ Pedal USB basado en Rpi Pico. Configurable mediante archivo de texto, puede emul
 ![DIN-RAIL](footswitch.png)
 
 ![PIECES](footswitchopen.png)
+
 Materializado de forma rapida y robusta mediante el sistema de prototipado [TUSISTEMITA](https://github.com/galopago/TUSISTEMITA).
 
 
